@@ -34,7 +34,24 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "terraform": "terraform"
+      }
+    },
+    "terraform": {
+      "locked": {
+        "lastModified": 1662597986,
+        "narHash": "sha256-YhINI/2/L6z29xOkUuKkImP8obAbyizD+3rglBR67O0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "69fcff00d0fbf7d742f31900f46a5c27c5caf85e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "69fcff00d0fbf7d742f31900f46a5c27c5caf85e",
+        "type": "github"
       }
     }
   },
