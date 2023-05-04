@@ -1,24 +1,37 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  description = "Application packaged using poetry2nix";
 
-  outputs = { self, nixpkgs }:
-    let
-      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
-    in
-    {
-      packages = forAllSystems (system: {
-        default = pkgs.${system}.poetry2nix.mkPoetryApplication { projectDir = self; };
-      });
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
-      devShells = forAllSystems (system: {
-        default = pkgs.${system}.mkShellNoCC {
-          packages = with pkgs.${system}; [
-            (poetry2nix.mkPoetryEnv { projectDir = self; })
-            poetry
+  outputs = { self, nixpkgs, flake-utils, poetry2nix }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        # see https://github.com/nix-community/poetry2nix/tree/master#api for more functions and examples.
+        inherit (poetry2nix.legacyPackages.${system}) mkPoetryApplication;
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      {
+        packages = {
+          myapp = mkPoetryApplication {
+            projectDir = "${self}/python";
+            poetrylock = "${self}/python/poetry.lock";
+            pyproject = "${self}/python/pyproject.toml";
+          };
+          default = self.packages.${system}.myapp;
+        };
+
+        devShells.default = pkgs.mkShell {
+          packages = [
+            poetry2nix.packages.${system}.poetry
+            self.packages.${system}.myapp
           ];
         };
       });
-    };
 }
