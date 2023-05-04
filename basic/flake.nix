@@ -21,6 +21,8 @@
             # pip is not needed since we declare dependencies in this 
             # flake.nix, it can be added however with python311Packages.pip
             python311Packages.requests
+            python311Packages.ipython
+            python311Packages.pandas
           ];
           buildInputs = [
             terraform.legacyPackages.${system}.terraform
