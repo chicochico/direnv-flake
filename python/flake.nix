@@ -20,5 +20,9 @@
             })
           ];
         };
+
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [ python310 pipenv ];
+        };
       });
 }
